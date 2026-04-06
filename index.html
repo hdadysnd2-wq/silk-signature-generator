@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILK United | توقيع إلكتروني لشركة سلك المتحدة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2B4DFF;
+            --primary-dark: #1a3ae0;
+            --secondary: #0f172a;
+            --bg: #f0f4ff;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --radius: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .header { background: linear-gradient(135deg, var(--secondary) 0%, #1e3a5f 100%); color: white; padding: 2rem 1rem; text-align: center; position: relative; }
+        .header h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.35rem; }
+        .header p { opacity: 0.75; font-size: 0.95rem; }
+        .lang-btn {
+            position: absolute; top: 1.25rem; left: 1.25rem;
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.3);
+            color: white; padding: 0.4rem 1rem; border-radius: 10px;
+            font-family: inherit; font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; backdrop-filter: blur(4px);
+        }
+        .lang-btn:hover { background: rgba(255,255,255,0.25); }
+        [dir="ltr"] .lang-btn { left: auto; right: 1.25rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+        .card { background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); padding: 1.5rem; }
+        .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card-title svg { width: 22px; height: 22px; color: var(--primary); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-grid .full-width { grid-column: 1 / -1; }
+        .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .form-group input, .form-group select { padding: 0.6rem 0.75rem; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 0.9rem; transition: border-color 0.2s, box-shadow 0.2s; background: #fafbff; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(43,77,255,0.1); }
+        .form-group input::placeholder { color: #cbd5e1; }
+        .separator { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+        .section-label { font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+        .color-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .color-swatch { width: 36px; height: 36px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.active { border-color: var(--text); box-shadow: 0 0 0 2px white, 0 0 0 4px var(--text); }
+        .preview-area { position: sticky; top: 2rem; }
+        .preview-box { border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; background: white; min-height: 180px; overflow-x: auto; direction: ltr; text-align: left; }
+        .actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+        .btn { padding: 0.7rem 1.25rem; border: none; border-radius: 12px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; flex: 1; justify-content: center; }
+        .btn svg { width: 18px; height: 18px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(43,77,255,0.3); }
+        .btn-outline { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-blue { background: #2563eb; color: white; border: none; }
+        .btn-green { background: #059669; color: white; border: none; }
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--secondary); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 0.9rem; opacity: 0; transition: all 0.3s ease; z-index: 1000; display: flex; align-items: center; gap: 0.5rem; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast svg { width: 20px; height: 20px; color: var(--success); }
+        .footer { text-align: center; padding: 2rem 1rem; color: var(--text-light); font-size: 0.85rem; }
+        .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .readonly-field { background: #f0f4ff !important; color: #64748b !important; }
+        .tips-box { margin-top: 1.5rem; padding: 1rem; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0; }
+        .tips-box p { font-size: 0.85rem; color: #166534; font-weight: 600; margin-bottom: 0.5rem; }
+        .tips-box ol { font-size: 0.8rem; color: #166534; padding-right: 1.25rem; line-height: 2; }
+        [dir="ltr"] .tips-box ol { padding-right: 0; padding-left: 1.25rem; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <button class="lang-btn" onclick="toggleLang()" id="langBtn">EN</button>
+    <img src="silk-logo.png" alt="SILK" style="height:110px;margin-bottom:1rem;filter:brightness(0) invert(1);">
+    <h1 data-ar="توقيع إلكتروني لشركة سلك المتحدة" data-en="SILK United Email Signature">توقيع إلكتروني لشركة سلك المتحدة</h1>
+</div>
+
+<div class="container">
+    <!-- FORM -->
+    <div>
+        <div class="card" style="margin-bottom:1.5rem;">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 015 5v1a5 5 0 01-10 0V7a5 5 0 015-5z"/><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>
+                <span data-ar="المعلومات الشخصية" data-en="Personal Information">المعلومات الشخصية</span>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label data-ar="الاسم الكامل *" data-en="Full Name *">الاسم الكامل *</label>
+                    <input type="text" id="nameField" placeholder="" data-ph-ar="أحمد محمد" data-ph-en="Ahmed Mohammed" oninput="onNameInput()">
+                </div>
+                <div class="form-group">
+                    <label data-ar="المسمى الوظيفي" data-en="Job Title">المسمى الوظيفي</label>
+                    <input type="text" id="titleField" placeholder="" data-ph-ar="مدير التسويق" data-ph-en="Marketing Manager" oninput="onTitleInput()">
+                </div>
+            </div>
+            <p id="otherLangHint" style="margin-top:0.5rem;font-size:0.75rem;color:#94a3b8;"></p>
+
+            <hr class="separator">
+
+            <div class="section-label" data-ar="معلومات التواصل" data-en="Contact Information">معلومات التواصل</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label data-ar="رقم الهاتف" data-en="Phone Number">رقم الهاتف</label>
+                    <input type="tel" id="phone" placeholder="+966 5X XXX XXXX" dir="ltr" oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label data-ar="البريد الإلكتروني" data-en="Email Address">البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="ahmed@silk.com.sa" dir="ltr" oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label data-ar="الموقع الإلكتروني" data-en="Website">الموقع الإلكتروني</label>
+                    <input type="url" id="website" value="silk.com.sa" dir="ltr" class="readonly-field" readonly>
+                </div>
+                <div class="form-group">
+                    <label data-ar="العنوان (الفرع)" data-en="Branch Location">العنوان (الفرع)</label>
+                    <select id="address" onchange="updatePreview()" class="lang-select">
+                        <option value="riyadh" data-ar="الرياض - المملكة العربية السعودية" data-en="Riyadh - Saudi Arabia" data-label-ar="الرياض" data-label-en="Riyadh">الرياض</option>
+                        <option value="dammam" data-ar="الدمام - المملكة العربية السعودية" data-en="Dammam - Saudi Arabia" data-label-ar="الدمام" data-label-en="Dammam">الدمام</option>
+                        <option value="jeddah" data-ar="جدة - المملكة العربية السعودية" data-en="Jeddah - Saudi Arabia" data-label-ar="جدة" data-label-en="Jeddah">جدة</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="separator">
+
+            <div class="section-label" data-ar="وسائل التواصل الاجتماعي" data-en="Social Media">وسائل التواصل الاجتماعي</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>X (Twitter)</label>
+                    <input type="text" id="twitter" value="@SilkUnited" dir="ltr" class="readonly-field" readonly>
+                </div>
+                <div class="form-group">
+                    <label>LinkedIn</label>
+                    <input type="text" id="linkedin" value="SilkUnited" dir="ltr" class="readonly-field" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Instagram</label>
+                    <input type="text" id="instagram" value="silkunited" dir="ltr" class="readonly-field" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Facebook</label>
+                    <input type="text" id="facebook" value="Silk-united" dir="ltr" class="readonly-field" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design -->
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
+                <span data-ar="خيارات التصميم" data-en="Design Options">خيارات التصميم</span>
+            </div>
+            <div class="section-label" data-ar="اللون الرئيسي" data-en="Primary Color">اللون الرئيسي</div>
+            <div class="color-row" id="colorRow"></div>
+        </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-area">
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+                <span data-ar="معاينة التوقيع" data-en="Signature Preview">معاينة التوقيع</span>
+            </div>
+            <div class="preview-box" id="signaturePreview"></div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="copySignature()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    <span data-ar="نسخ التوقيع" data-en="Copy Signature">نسخ التوقيع</span>
+                </button>
+                <button class="btn btn-outline" onclick="copyHTML()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    <span data-ar="نسخ HTML" data-en="Copy HTML">نسخ HTML</span>
+                </button>
+            </div>
+            <div class="actions" style="margin-top:0.5rem;">
+                <button class="btn btn-blue" onclick="downloadWord()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span data-ar="تحميل Word" data-en="Download Word">تحميل Word</span>
+                </button>
+                <button class="btn btn-green" onclick="downloadImage()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <span data-ar="تحميل PNG" data-en="Download PNG">تحميل PNG</span>
+                </button>
+            </div>
+
+            <div class="tips-box">
+                <p data-ar="&#128161; كيف تضيف التوقيع لبريدك؟" data-en="&#128161; How to add the signature to your email?">&#128161; كيف تضيف التوقيع لبريدك؟</p>
+                <ol id="tipsList">
+                    <li data-ar='انقر "نسخ التوقيع"' data-en='Click "Copy Signature"'>انقر "نسخ التوقيع"</li>
+                    <li data-ar="افتح إعدادات بريدك الإلكتروني" data-en="Open your email settings">افتح إعدادات بريدك الإلكتروني</li>
+                    <li data-ar="Gmail: الإعدادات ← التوقيع ← لصق" data-en="Gmail: Settings → Signature → Paste">Gmail: الإعدادات &rarr; التوقيع &rarr; لصق</li>
+                    <li data-ar="Outlook: الإعدادات ← البريد ← التوقيع ← لصق" data-en="Outlook: Settings → Mail → Signature → Paste">Outlook: الإعدادات &rarr; البريد &rarr; التوقيع &rarr; لصق</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMsg"></span>
+</div>
+
+<div class="footer">
+    <img src="silk-logo.png" alt="SILK" style="height:24px;margin-bottom:0.5rem;display:block;margin-left:auto;margin-right:auto;">
+    Powered by <a href="#">SILK</a>
+</div>
+
+<script>
+    // ═══════════════════════════
+    // LANGUAGE SWITCHER
+    // ═══════════════════════════
+    let currentLang = 'ar';
+
+    function toggleLang() {
+        // Save current field values before switching
+        const nameField = document.getElementById('nameField');
+        const titleField = document.getElementById('titleField');
+        if (currentLang === 'ar') {
+            stored.nameAr = nameField.value;
+            stored.titleAr = titleField.value;
+        } else {
+            stored.nameEn = nameField.value;
+            stored.titleEn = titleField.value;
+        }
+
+        currentLang = currentLang === 'ar' ? 'en' : 'ar';
+        applyLang();
+    }
+
+    function applyLang() {
+        const html = document.documentElement;
+        html.lang = currentLang;
+        html.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+
+        document.getElementById('langBtn').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
+
+        // Update all text elements
+        document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+            el.textContent = el.dataset[currentLang];
+        });
+
+        // Update placeholders
+        document.querySelectorAll('[data-ph-ar][data-ph-en]').forEach(el => {
+            el.placeholder = el.dataset[currentLang === 'ar' ? 'phAr' : 'phEn'];
+        });
+
+        // Update select options text
+        document.querySelectorAll('.lang-select option').forEach(opt => {
+            const label = currentLang === 'ar' ? opt.dataset.labelAr : opt.dataset.labelEn;
+            if (label) opt.textContent = label;
+        });
+
+        // Load correct values into fields
+        loadFieldsForLang();
+        updatePreview();
+    }
+
+    // ═══════════════════════════
+    // STATE
+    // ═══════════════════════════
+    let state = { color: '#2B4DFF', logoData: null };
+
+    // Stored values per language
+    const stored = {
+        nameAr: '', nameEn: '',
+        titleAr: '', titleEn: ''
+    };
+
+    function onNameInput() {
+        const val = document.getElementById('nameField').value;
+        if (currentLang === 'ar') stored.nameAr = val;
+        else stored.nameEn = val;
+        updateHint();
+        updatePreview();
+    }
+
+    function onTitleInput() {
+        const val = document.getElementById('titleField').value;
+        if (currentLang === 'ar') stored.titleAr = val;
+        else stored.titleEn = val;
+        updateHint();
+        updatePreview();
+    }
+
+    function updateHint() {
+        const hint = document.getElementById('otherLangHint');
+        if (currentLang === 'ar') {
+            const parts = [];
+            if (stored.nameEn) parts.push('Name: ' + stored.nameEn);
+            if (stored.titleEn) parts.push('Title: ' + stored.titleEn);
+            hint.textContent = parts.length ? '🇬🇧 ' + parts.join(' | ') : '';
+        } else {
+            const parts = [];
+            if (stored.nameAr) parts.push('الاسم: ' + stored.nameAr);
+            if (stored.titleAr) parts.push('المنصب: ' + stored.titleAr);
+            hint.textContent = parts.length ? '🇸🇦 ' + parts.join(' | ') : '';
+        }
+    }
+
+    function loadFieldsForLang() {
+        const nameField = document.getElementById('nameField');
+        const titleField = document.getElementById('titleField');
+        if (currentLang === 'ar') {
+            nameField.value = stored.nameAr;
+            nameField.dir = 'rtl';
+            titleField.value = stored.titleAr;
+            titleField.dir = 'rtl';
+        } else {
+            nameField.value = stored.nameEn;
+            nameField.dir = 'ltr';
+            titleField.value = stored.titleEn;
+            titleField.dir = 'ltr';
+        }
+        updateHint();
+    }
+
+    const colors = ['#2B4DFF','#1e293b'];
+
+    function initColors() {
+        document.getElementById('colorRow').innerHTML = colors.map(c =>
+            `<div class="color-swatch ${c === state.color ? 'active' : ''}" style="background:${c}" onclick="setColor('${c}')" data-color="${c}"></div>`
+        ).join('');
+    }
+
+    function setColor(c) {
+        state.color = c;
+        document.querySelectorAll('.color-swatch').forEach(el => el.classList.toggle('active', el.dataset.color === c));
+        updatePreview();
+    }
+
+    // ═══════════════════════════
+    // FORM VALUES
+    // ═══════════════════════════
+    function getValues() {
+        // Sync current field to stored
+        const nameField = document.getElementById('nameField');
+        const titleField = document.getElementById('titleField');
+        if (currentLang === 'ar') {
+            stored.nameAr = nameField.value;
+            stored.titleAr = titleField.value;
+        } else {
+            stored.nameEn = nameField.value;
+            stored.titleEn = titleField.value;
+        }
+
+        const sel = document.getElementById('address');
+        const opt = sel.options[sel.selectedIndex];
+        return {
+            name: stored.nameAr,
+            nameEn: stored.nameEn,
+            title: stored.titleAr,
+            titleEn: stored.titleEn,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            website: document.getElementById('website').value,
+            addressAr: opt.dataset.ar,
+            addressEn: opt.dataset.en,
+            linkedin: document.getElementById('linkedin').value,
+            twitter: document.getElementById('twitter').value,
+            instagram: document.getElementById('instagram').value,
+            facebook: document.getElementById('facebook').value,
+        };
+    }
+
+    // ═══════════════════════════
+    // BUILD SIGNATURE
+    // ═══════════════════════════
+    function buildSignature() {
+        const v = getValues();
+        const c = state.color;
+
+        if (!stored.nameAr.trim() && !stored.nameEn.trim()) {
+            return currentLang === 'ar'
+                ? '<p style="color:#94a3b8;text-align:center;padding:2rem;font-size:14px;">ابدأ بكتابة اسمك لرؤية التوقيع...</p>'
+                : '<p style="color:#94a3b8;text-align:center;padding:2rem;font-size:14px;">Start typing your name to see the preview...</p>';
+        }
+
+        // QR Code — vCard with all contact info
+        const fullName = v.nameEn || v.name || 'SILK';
+        const nameParts = fullName.trim().split(/\s+/);
+        const lastName = nameParts.length > 1 ? nameParts.pop() : '';
+        const firstName = nameParts.join(' ') || fullName;
+        const vcard = [
+            'BEGIN:VCARD',
+            'VERSION:3.0',
+            `N:${lastName};${firstName};;;`,
+            `FN:${fullName}`,
+            'ORG:SILK;',
+            v.titleEn ? `TITLE:${v.titleEn}` : '',
+            v.phone ? `TEL;TYPE=CELL:${v.phone}` : '',
+            v.email ? `EMAIL;TYPE=WORK:${v.email}` : '',
+            v.website ? `URL:https://${v.website}` : '',
+            v.addressEn ? `ADR;TYPE=WORK:;;;;${v.addressEn.split(' - ')[0]};;${v.addressEn.split(' - ')[1] || ''}` : '',
+            'NOTE:SILK - silk.com.sa',
+            'END:VCARD'
+        ].filter(Boolean).join('\n');
+        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=65x65&data=${encodeURIComponent(vcard)}&color=${c.replace('#','')}`;
+        const logoSrc = state.logoData || '';
+
+        // Left column: QR + Logo
+        let leftContent = `<img src="${qrSrc}" alt="QR" style="width:50px;height:50px;border-radius:2px;display:block;">`;
+        if (logoSrc) leftContent += `<img src="${logoSrc}" alt="logo" style="width:70px;height:auto;display:block;margin-top:3px;margin-left:-10px;object-fit:contain;">`;
+
+        // Inline icons (icons8 ios-filled - colored)
+        const icSize = '12';
+        const icStyle = `vertical-align:middle;margin-right:3px;`;
+        const clr = c.replace('#','');
+        const phoneIcon = `<img src="https://img.icons8.com/ios-filled/50/${clr}/phone.png" width="${icSize}" height="${icSize}" style="${icStyle}" alt="">`;
+        const emailIcon = `<img src="https://img.icons8.com/ios-filled/50/${clr}/new-post.png" width="${icSize}" height="${icSize}" style="${icStyle}" alt="">`;
+        const webIcon = `<img src="https://img.icons8.com/ios-filled/50/${clr}/globe--v1.png" width="${icSize}" height="${icSize}" style="${icStyle}" alt="">`;
+        const pinIcon = `<img src="https://img.icons8.com/ios-filled/50/${clr}/marker.png" width="${icSize}" height="${icSize}" style="${icStyle}" alt="">`;
+
+        // Contact lines
+        let line1Parts = [];
+        if (v.phone) line1Parts.push(`${phoneIcon}<a href="tel:${v.phone}" style="color:#475569;text-decoration:none;">${v.phone}</a>`);
+        if (v.email) line1Parts.push(`${emailIcon}<a href="mailto:${v.email}" style="color:#475569;text-decoration:none;">${v.email}</a>`);
+        const sep = `<span style="color:#cbd5e1;margin:0 5px;">|</span>`;
+        const contactLine1 = line1Parts.length ? `<p style="margin:3px 0 0;font-size:9px;color:#475569;">${line1Parts.join(sep)}</p>` : '';
+
+        let line2Parts = [];
+        if (v.website) line2Parts.push(`${webIcon}<a href="https://${v.website}" style="color:${c};text-decoration:none;">${v.website}</a>`);
+        line2Parts.push(`${pinIcon}${v.addressEn}`);
+        const contactLine2 = `<p style="margin:2px 0 0;font-size:9px;color:#475569;">${line2Parts.join(sep)}</p>`;
+
+        const contactHTML = contactLine1 + contactLine2;
+
+        // Social - brand icons colored
+        const sSize = '14';
+        const sIcStyle = `vertical-align:middle;margin-right:5px;`;
+        const socials = [];
+        if (v.twitter) socials.push(`<a href="https://x.com/${v.twitter.replace('@','')}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/twitterx--v1.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="X"></a>`);
+        if (v.linkedin) socials.push(`<a href="https://linkedin.com/company/${v.linkedin}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/linkedin.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="in"></a>`);
+        if (v.instagram) socials.push(`<a href="https://instagram.com/${v.instagram}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/instagram-new--v1.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="IG"></a>`);
+        if (v.facebook) socials.push(`<a href="https://facebook.com/${v.facebook}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/facebook-new.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="f"></a>`);
+        const socialHTML = socials.length ? `<div style="margin-top:3px;">${socials.join('')}</div>` : '';
+
+        // Name: current language only
+        const currentName = currentLang === 'ar' ? (v.name || v.nameEn) : (v.nameEn || v.name);
+        const nameDisplay = currentName
+            ? `<p style="margin:0;font-size:14px;font-weight:700;color:#1e293b;">${currentName}</p>`
+            : '';
+
+        // Title: current language only
+        const currentTitle = currentLang === 'ar' ? (v.title || v.titleEn) : (v.titleEn || v.title);
+        const titleDisplay = currentTitle
+            ? `<p style="margin:1px 0 0;font-size:10px;color:#64748b;">${currentTitle}</p>`
+            : '';
+
+        return `<table cellpadding="0" cellspacing="0" border="0" style="font-family:'Inter',Arial,sans-serif;color:#1e293b;direction:ltr;text-align:left;">
+            <tr>
+                <td style="vertical-align:top;padding-right:8px;">
+                    ${leftContent}
+                </td>
+                <td style="width:1px;background:${c};border-radius:1px;font-size:0;line-height:0;">&nbsp;</td>
+                <td style="vertical-align:top;padding-left:8px;">
+                    ${nameDisplay}
+                    ${titleDisplay}
+                    ${contactHTML}
+                    ${socialHTML}
+                </td>
+            </tr>
+        </table>`;
+    }
+
+    function updatePreview() {
+        document.getElementById('signaturePreview').innerHTML = buildSignature();
+    }
+
+    // ═══════════════════════════
+    // COPY / DOWNLOAD
+    // ═══════════════════════════
+    function copySignature() {
+        const html = document.getElementById('signaturePreview').innerHTML;
+        if (navigator.clipboard && window.ClipboardItem) {
+            navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html],{type:'text/html'})})]).then(() => {
+                showToast(currentLang==='ar'?'تم نسخ التوقيع!':'Signature copied!');
+            }).catch(fallbackCopy);
+        } else { fallbackCopy(); }
+    }
+
+    function fallbackCopy() {
+        const sel = window.getSelection(), range = document.createRange();
+        range.selectNodeContents(document.getElementById('signaturePreview'));
+        sel.removeAllRanges(); sel.addRange(range);
+        document.execCommand('copy'); sel.removeAllRanges();
+        showToast(currentLang==='ar'?'تم نسخ التوقيع!':'Signature copied!');
+    }
+
+    function copyHTML() {
+        navigator.clipboard.writeText(buildSignature()).then(() => {
+            showToast(currentLang==='ar'?'تم نسخ HTML!':'HTML copied!');
+        }).catch(() => {
+            showToast(currentLang==='ar'?'فشل النسخ':'Copy failed');
+        });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function downloadWord() {
+        const v = getValues();
+        const name = v.nameEn || v.name;
+        if (!name.trim()) { showToast(currentLang==='ar'?'اكتب اسمك أولاً':'Enter your name first'); return; }
+        const html = buildSignature();
+        const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Arial;direction:ltr;}table{border-collapse:collapse;}a{text-decoration:none;}</style></head><body><h3>Email Signature - ${name}</h3><div style="border:1px solid #e2e8f0;padding:20px;">${html}</div></body></html>`;
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([doc],{type:'application/msword'}));
+        link.download = `signature-${name.replace(/\s+/g,'-')}.doc`;
+        link.click();
+        showToast(currentLang==='ar'?'تم التحميل!':'Downloaded!');
+    }
+
+    function downloadImage() {
+        const v = getValues();
+        const name = v.nameEn || v.name;
+        if (!name.trim()) { showToast(currentLang==='ar'?'اكتب اسمك أولاً':'Enter your name first'); return; }
+        const preview = document.getElementById('signaturePreview');
+        const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d'), scale = 2;
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:absolute;left:-9999px;background:white;padding:24px;';
+        wrap.innerHTML = preview.innerHTML;
+        document.body.appendChild(wrap);
+        const r = wrap.getBoundingClientRect();
+        canvas.width = r.width*scale; canvas.height = r.height*scale;
+        document.body.removeChild(wrap);
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${r.width}" height="${r.height}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="background:white;padding:24px;font-family:Arial;">${preview.innerHTML}</div></foreignObject></svg>`;
+        const img = new Image();
+        img.onload = () => { ctx.scale(scale,scale); ctx.fillStyle='white'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); const a=document.createElement('a'); a.download=`signature-${name.replace(/\s+/g,'-')}.png`; a.href=canvas.toDataURL('image/png'); a.click(); showToast(currentLang==='ar'?'تم التحميل!':'Downloaded!'); };
+        img.onerror = () => showToast(currentLang==='ar'?'حاول النسخ بدلاً':'Try copying instead');
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    // ═══════════════════════════
+    // LOAD LOGO + INIT
+    // ═══════════════════════════
+    function loadDefaultLogo() {
+        // Embedded base64 logo - works in all email clients
+        state.logoData = "data:image/png;base64,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";
+        updatePreview();
+    }
+
+    initColors();
+    applyLang();
+    loadDefaultLogo();
+</script>
+
+</body>
+</html>
