@@ -223,14 +223,14 @@
     </div>
 </div>
 
-<div class="toast" id="toast">
+<div class="toast" id="toast" role="status" aria-live="polite">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
     <span id="toastMsg"></span>
 </div>
 
 <div class="footer">
     <img src="silk-logo.png" alt="SILK" style="height:24px;margin-bottom:0.5rem;display:block;margin-left:auto;margin-right:auto;">
-    Powered by <a href="#">SILK</a>
+    Powered by <a href="https://silk.com.sa" target="_blank" rel="noopener">SILK</a>
 </div>
 
 <script>
@@ -417,6 +417,8 @@
         }
 
         // QR Code — vCard with all contact info
+        // Sanitize vCard values: escape semicolons, commas, newlines
+        const vcEsc = (s) => s ? s.replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n') : '';
         const fullName = v.nameEn || v.name || 'SILK';
         const nameParts = fullName.trim().split(/\s+/);
         const lastName = nameParts.length > 1 ? nameParts.pop() : '';
@@ -424,14 +426,14 @@
         const vcard = [
             'BEGIN:VCARD',
             'VERSION:3.0',
-            `N:${lastName};${firstName};;;`,
-            `FN:${fullName}`,
+            `N:${vcEsc(lastName)};${vcEsc(firstName)};;;`,
+            `FN:${vcEsc(fullName)}`,
             'ORG:SILK;',
-            v.titleEn ? `TITLE:${v.titleEn}` : '',
-            v.phone ? `TEL;TYPE=CELL:${v.phone}` : '',
-            v.email ? `EMAIL;TYPE=WORK:${v.email}` : '',
-            v.website ? `URL:https://${v.website}` : '',
-            v.addressEn ? `ADR;TYPE=WORK:;;;;${v.addressEn.split(' - ')[0]};;${v.addressEn.split(' - ')[1] || ''}` : '',
+            v.titleEn ? `TITLE:${vcEsc(v.titleEn)}` : '',
+            v.phone ? `TEL;TYPE=CELL:${vcEsc(v.phone)}` : '',
+            v.email ? `EMAIL;TYPE=WORK:${vcEsc(v.email)}` : '',
+            v.website ? `URL:https://${vcEsc(v.website)}` : '',
+            v.addressEn ? `ADR;TYPE=WORK:;;;;${vcEsc(v.addressEn.split(' - ')[0])};;${vcEsc(v.addressEn.split(' - ')[1] || '')}` : '',
             'NOTE:SILK - silk.com.sa',
             'END:VCARD'
         ].filter(Boolean).join('\n');
@@ -470,9 +472,9 @@
         const sSize = '14';
         const sIcStyle = `vertical-align:middle;margin-right:5px;`;
         const socials = [];
-        if (v.twitter) socials.push(`<a href="https://x.com/${v.twitter.replace('@','')}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/twitterx--v1.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="X"></a>`);
-        if (v.linkedin) socials.push(`<a href="https://linkedin.com/company/${v.linkedin}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/linkedin.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="in"></a>`);
-        if (v.instagram) socials.push(`<a href="https://instagram.com/${v.instagram}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/instagram-new--v1.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="IG"></a>`);
+        if (v.twitter) socials.push(`<a href="https://x.com/${esc(v.twitter.replace('@',''))}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/twitterx--v1.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="X"></a>`);
+        if (v.linkedin) socials.push(`<a href="https://linkedin.com/company/${esc(v.linkedin)}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/linkedin.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="in"></a>`);
+        if (v.instagram) socials.push(`<a href="https://instagram.com/${esc(v.instagram)}" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/instagram-new--v1.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="IG"></a>`);
         if (v.facebook) socials.push(`<a href="https://www.facebook.com/people/Silk-united/61576778517849/" style="text-decoration:none;"><img src="https://img.icons8.com/ios-filled/50/${clr}/facebook-new.png" width="${sSize}" height="${sSize}" style="${sIcStyle}" alt="f"></a>`);
         const socialHTML = socials.length ? `<div style="margin-top:3px;">${socials.join('')}</div>` : '';
 
@@ -505,7 +507,7 @@
     }
 
     function updatePreview() {
-        // Debounce QR API calls — only update after 500ms of no typing
+        // Debounce QR API calls — only update after 300ms of no typing
         clearTimeout(qrTimer);
         qrTimer = setTimeout(() => {
             document.getElementById('signaturePreview').innerHTML = buildSignature();
@@ -533,11 +535,30 @@
     }
 
     function copyHTML() {
-        navigator.clipboard.writeText(buildSignature()).then(() => {
+        const html = buildSignature();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(html).then(() => {
+                showToast(currentLang==='ar'?'تم نسخ HTML!':'HTML copied!');
+            }).catch(() => fallbackCopyText(html));
+        } else {
+            fallbackCopyText(html);
+        }
+    }
+
+    function fallbackCopyText(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand('copy');
             showToast(currentLang==='ar'?'تم نسخ HTML!':'HTML copied!');
-        }).catch(() => {
+        } catch(e) {
             showToast(currentLang==='ar'?'فشل النسخ':'Copy failed');
-        });
+        }
+        document.body.removeChild(ta);
     }
 
     function showToast(msg) {
