@@ -422,12 +422,12 @@
             'NOTE:SILK - silk.com.sa',
             'END:VCARD'
         ].filter(Boolean).join('\n');
-        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=65x65&data=${encodeURIComponent(vcard)}&color=${c.replace('#','')}`;
+        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(vcard)}&color=${c.replace('#','')}`;
         const logoSrc = state.logoData || '';
 
         // Left column: QR + Logo
-        let leftContent = `<table cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="text-align:center;"><img src="${qrSrc}" alt="QR" style="width:50px;height:50px;border-radius:2px;display:block;margin:0 auto;"></td></tr>`;
-        if (logoSrc) leftContent += `<tr><td align="center" style="text-align:center;"><img src="${logoSrc}" alt="logo" style="width:55px;height:auto;display:block;margin:3px auto 0;object-fit:contain;"></td></tr>`;
+        let leftContent = `<table cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="text-align:center;"><img src="${qrSrc}" alt="QR" style="width:70px;height:70px;border-radius:2px;display:block;margin:0 auto;"></td></tr>`;
+        if (logoSrc) leftContent += `<tr><td align="center" style="text-align:center;"><img src="${logoSrc}" alt="logo" style="width:70px;height:auto;display:block;margin:3px auto 0;object-fit:contain;"></td></tr>`;
         leftContent += `</table>`;
 
         // Inline icons (icons8 ios-filled - colored)
