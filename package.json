@@ -1,0 +1,8 @@
+{
+  "name": "silk-signature-generator",
+  "version": "1.0.0",
+  "description": "SILK United Email Signature Generator",
+  "scripts": {
+    "start": "npx serve -s . -l $PORT"
+  }
+}
