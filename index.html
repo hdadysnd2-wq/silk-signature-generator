@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SILK United | توقيع إلكتروني لشركة سلك المتحدة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.icons8.com https://api.qrserver.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https://api.qrserver.com;">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <style>
         :root {
             --primary: #2B4DFF;
@@ -342,6 +343,18 @@
         updateHint();
     }
 
+    // Security: escape HTML to prevent XSS
+    function esc(str) {
+        if (!str) return '';
+        const d = document.createElement('div');
+        d.appendChild(document.createTextNode(str));
+        return d.innerHTML;
+    }
+
+    // Debounce for QR API calls (prevent data leak on every keystroke)
+    let qrTimer = null;
+    let lastQrSrc = '';
+
     const colors = ['#2B4DFF','#1e293b'];
 
     function initColors() {
@@ -441,14 +454,14 @@
 
         // Contact lines
         let line1Parts = [];
-        if (v.phone) line1Parts.push(`${phoneIcon}<a href="tel:${v.phone}" style="color:#475569;text-decoration:none;">${v.phone}</a>`);
-        if (v.email) line1Parts.push(`${emailIcon}<a href="mailto:${v.email}" style="color:#475569;text-decoration:none;">${v.email}</a>`);
+        if (v.phone) line1Parts.push(`${phoneIcon}<a href="tel:${esc(v.phone)}" style="color:#475569;text-decoration:none;">${esc(v.phone)}</a>`);
+        if (v.email) line1Parts.push(`${emailIcon}<a href="mailto:${esc(v.email)}" style="color:#475569;text-decoration:none;">${esc(v.email)}</a>`);
         const sep = `<span style="color:#cbd5e1;margin:0 5px;">|</span>`;
         const contactLine1 = line1Parts.length ? `<p style="margin:3px 0 0;font-size:9px;color:#475569;">${line1Parts.join(sep)}</p>` : '';
 
         let line2Parts = [];
-        if (v.website) line2Parts.push(`${webIcon}<a href="https://${v.website}" style="color:${c};text-decoration:none;">${v.website}</a>`);
-        line2Parts.push(`${pinIcon}${v.addressEn}`);
+        if (v.website) line2Parts.push(`${webIcon}<a href="https://${esc(v.website)}" style="color:${c};text-decoration:none;">${esc(v.website)}</a>`);
+        line2Parts.push(`${pinIcon}${esc(v.addressEn)}`);
         const contactLine2 = `<p style="margin:2px 0 0;font-size:9px;color:#475569;">${line2Parts.join(sep)}</p>`;
 
         const contactHTML = contactLine1 + contactLine2;
@@ -466,13 +479,13 @@
         // Name: current language only
         const currentName = currentLang === 'ar' ? (v.name || v.nameEn) : (v.nameEn || v.name);
         const nameDisplay = currentName
-            ? `<p style="margin:0;font-size:14px;font-weight:700;color:#1e293b;">${currentName}</p>`
+            ? `<p style="margin:0;font-size:14px;font-weight:700;color:#1e293b;">${esc(currentName)}</p>`
             : '';
 
         // Title: current language only
         const currentTitle = currentLang === 'ar' ? (v.title || v.titleEn) : (v.titleEn || v.title);
         const titleDisplay = currentTitle
-            ? `<p style="margin:1px 0 0;font-size:10px;color:#64748b;">${currentTitle}</p>`
+            ? `<p style="margin:1px 0 0;font-size:10px;color:#64748b;">${esc(currentTitle)}</p>`
             : '';
 
         return `<table cellpadding="0" cellspacing="0" border="0" style="font-family:'Inter',Arial,sans-serif;color:#1e293b;direction:ltr;text-align:left;">
@@ -492,7 +505,11 @@
     }
 
     function updatePreview() {
-        document.getElementById('signaturePreview').innerHTML = buildSignature();
+        // Debounce QR API calls — only update after 500ms of no typing
+        clearTimeout(qrTimer);
+        qrTimer = setTimeout(() => {
+            document.getElementById('signaturePreview').innerHTML = buildSignature();
+        }, 300);
     }
 
     // ═══════════════════════════
@@ -535,11 +552,13 @@
         const name = v.nameEn || v.name;
         if (!name.trim()) { showToast(currentLang==='ar'?'اكتب اسمك أولاً':'Enter your name first'); return; }
         const html = buildSignature();
-        const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Arial;direction:ltr;}table{border-collapse:collapse;}a{text-decoration:none;}</style></head><body><h3>Email Signature - ${name}</h3><div style="border:1px solid #e2e8f0;padding:20px;">${html}</div></body></html>`;
+        const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Arial;direction:ltr;}table{border-collapse:collapse;}a{text-decoration:none;}</style></head><body><h3>Email Signature - ${esc(name)}</h3><div style="border:1px solid #e2e8f0;padding:20px;">${html}</div></body></html>`;
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(new Blob([doc],{type:'application/msword'}));
+        const blobUrl = URL.createObjectURL(new Blob([doc],{type:'application/msword'}));
+        link.href = blobUrl;
         link.download = `signature-${name.replace(/\s+/g,'-')}.doc`;
         link.click();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
         showToast(currentLang==='ar'?'تم التحميل!':'Downloaded!');
     }
 
